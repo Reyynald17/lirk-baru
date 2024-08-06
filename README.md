@@ -1,0 +1,2 @@
+# lirk-baru
+gabut doang
