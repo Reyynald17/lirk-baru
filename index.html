@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Project yawww :3</title>
+    <link rel="icon" href="media/favicon.ico" type="image/x-icon"> 
+    <style>
+        @font-face {
+            font-family: 'RobotoBold';
+            src: url('media/fonts/Roboto-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'RobotoBold', Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .button {
+            background-color: #3498db;
+            border: none;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.3s, transform 0.2s, opacity 1s;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .button.hidden {
+            opacity: 0;
+            pointer-events: none; 
+        }
+
+        .lyrics {
+            display: none;
+            font-size: 28px;
+            margin-top: 30px;
+            word-wrap: break-word;
+            position: absolute;
+            white-space: nowrap; 
+            border-right: .15em solid orange; 
+            animation: blink-caret 0.75s step-end infinite; 
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: orange; }
+        }
+
+        /* Responsif */
+        @media (max-width: 600px) {
+            .button {
+                padding: 15px 30px;
+                font-size: 18px;
+                margin: 8px 0;
+            }
+            .lyrics {
+                font-size: 22px;
+                margin-top: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="button" id="playButton">Play Music</button>
+    <div class="lyrics" id="lyrics"></div>
+    <audio id="audio" src="media/song.mp3"></audio>
+
+    <script>
+        const playButton = document.getElementById('playButton');
+        const audio = document.getElementById('audio');
+        const lyricsContainer = document.getElementById('lyrics');
+
+        const lyrics = [
+            { time: 0, text: "" }, 
+            { time: 5, text: "Katakan cinta bila kau cinta", duration: 3 },
+            { time: 10.85, text: "Hati ini meminta", duration: 3 },
+            { time: 14, text: "Kau lebih dari teman berbagi", duration: 3 },
+            { time: 19, text: "Jadi kekasihku saja", duration: 3 },
+            { time: 23.73, text: "", duration: 3 } 
+        ];
+
+        playButton.addEventListener('click', () => {
+            playButton.style.opacity = '0'; 
+            playButton.style.pointerEvents = 'none'; 
+            audio.play();
+
+            lyrics.forEach((line, index) => {
+                setTimeout(() => {
+                    if (line.text !== "") {
+                        typeWriter(line.text, line.duration);
+                    } else {
+                        lyricsContainer.style.display = 'none'; 
+                    }
+                }, line.time * 1000);
+            });
+        });
+
+        audio.addEventListener('ended', () => {
+            
+            deleteText();
+        });
+
+        function typeWriter(text, duration) {
+            let i = 0;
+            lyricsContainer.innerHTML = "";
+            lyricsContainer.style.display = 'block';
+            const interval = duration * 1000 / text.length;
+
+            function type() {
+                if (i < text.length) {
+                    lyricsContainer.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, interval);
+                }
+            }
+            type();
+        }
+
+        function deleteText() {
+            let text = lyricsContainer.innerHTML;
+            let interval = 75; 
+
+            function deleteChar() {
+                if (text.length > 0) {
+                    text = text.slice(0, -1); 
+                    lyricsContainer.innerHTML = text;
+                    setTimeout(deleteChar, interval);
+                } else {
+                    lyricsContainer.style.display = 'none'; 
+                }
+            }
+            deleteChar();
+        }
+    </script>
+</body>
+</html>
